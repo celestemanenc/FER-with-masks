@@ -24,18 +24,18 @@ while True:
         #On 's' key pressed, photo is taken --> converted to greyscale --> saved as jpg
 
         if key == ord('s'):
-            cv2.imwrite(filename='saved_img.jpg', img=frame)
+            cv2.imwrite(filename='sample.jpg', img=frame)
             webcam.release()
-            img_new = cv2.imread('saved_img.jpg', cv2.IMREAD_GRAYSCALE)
+            img_new = cv2.imread('sample.jpg', cv2.IMREAD_GRAYSCALE)
             img_new = cv2.imshow("Captured Image", img_new)
             cv2.waitKey(1650)
             cv2.destroyAllWindows()
             print("Processing image...")
-            img_ = cv2.imread('saved_img.jpg', cv2.IMREAD_ANYCOLOR)
+            img_ = cv2.imread('sample.jpg', cv2.IMREAD_ANYCOLOR)
             print("Converting RGB image to grayscale...")
             gray = cv2.cvtColor(img_, cv2.COLOR_BGR2GRAY)
             print("Converted RGB image to grayscale...")
-            cv2.imwrite(filename='save_grayscale.jpg', img=gray)
+            cv2.imwrite(filename='sample_grayscale.jpg', img=gray)
             print("Image saved!")
         
             break

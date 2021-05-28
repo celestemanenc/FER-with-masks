@@ -65,6 +65,7 @@ for i in range(44):
 df = pd.DataFrame(img_px)
 df.to_csv('images_sepBySpaces_V2.csv', header=None, index=False, sep=" ")
 
+#use different separators so pixels can be in one cell
 df = pd.read_csv('images_sepBySpaces_V2.csv', header=None, sep=",")
 # df = df.set_index(img_names)
 df["Emotion"] = pd.read_csv('labels_column.csv', header=None, sep=",")
