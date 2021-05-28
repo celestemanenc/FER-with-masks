@@ -1,14 +1,17 @@
-# https://github.com/kevinam99/capturing-images-from-webcam-using-opencv-python/blob/master/webcam-capture-v1.01.py
+# This is the code for the app prototype.
+
+
+# webcam capture code inspired by: https://github.com/kevinam99/capturing-images-from-webcam-using-opencv-python/blob/master/webcam-capture-v1.01.py
 
 import cv2 
 
-#--Prompt with instructions
+#--Prompt with instructions (including request for webcam access)
 
 
 
 
 
-#--Take photo.
+#--Take photo. (Access to webcam must be granted)
 
 key = cv2. waitKey(1)
 webcam = cv2.VideoCapture(0)
@@ -17,7 +20,10 @@ while True:
         check, frame = webcam.read()
         cv2.imshow("Capturing", frame)
         key = cv2.waitKey(1)
-        if key == ord('s'): 
+
+        #On 's' key pressed, photo is taken --> converted to greyscale --> saved as jpg
+
+        if key == ord('s'):
             cv2.imwrite(filename='saved_img.jpg', img=frame)
             webcam.release()
             img_new = cv2.imread('saved_img.jpg', cv2.IMREAD_GRAYSCALE)
@@ -33,6 +39,10 @@ while True:
             print("Image saved!")
         
             break
+
+        # On 'q' key pressed, window just closes without photograph being taken.
+
+
         elif key == ord('q'):
             print("Turning off camera.")
             webcam.release()
@@ -41,6 +51,8 @@ while True:
             cv2.destroyAllWindows()
             break
         
+    #Exception: on key press (other than 's' or 'q') close window
+
     except(KeyboardInterrupt):
         print("Turning off camera.")
         webcam.release()
@@ -48,3 +60,5 @@ while True:
         print("Program ended.")
         cv2.destroyAllWindows()
         break
+
+#-- Run CNN prediciton on photo and let's see what happens +Show emotion e.g. "Are you *angry* ?" Y/N
