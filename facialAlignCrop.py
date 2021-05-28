@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd 
 import math 
 from PIL import Image
-import preprocessImages as prepImg
+import prepare_folders as prepFolders
 
 def euclidean_distance(a, b):
 	x1 = a[0]; y1 = a[1]
@@ -161,7 +161,7 @@ nose_detector = cv2.CascadeClassifier(nose_detector_path)
 
 
 
-test_set = prepImg.imagePaths
+test_set = prepFolders.imagePaths
 #print(test_set)	#check import
 open(test_set[0])
 
@@ -181,7 +181,7 @@ for instance in test_set:
 	fig.axes.get_xaxis().set_visible(False)
 	fig.axes.get_yaxis().set_visible(False)
 
-	newImagePath = "/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/preprocessed-ck/" + prepImg.imageFilenames[counter]
+	newImagePath = "/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/preprocessed-ck/" + prepFolders.imageFilenames[counter]
 	plt.savefig(newImagePath, bbox_inches="tight", pad_inches=0)
 
 	counter += 1
