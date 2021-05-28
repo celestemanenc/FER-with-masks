@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd 
 import math 
 from PIL import Image
-# import facialAlignCrop as FAcrop
 
 n = 0
 imagePaths = []
