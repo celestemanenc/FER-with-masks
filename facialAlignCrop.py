@@ -1,5 +1,7 @@
+# This code rotates the photographs from the CK database such that the eyes of the subject are aligned horizontally and
+# each image is cropped tightly aroung the upper half of the face.
+
 # https://sefiks.com/2020/02/23/face-alignment-for-face-recognition-in-python-within-opencv/ 
-# https://github.com/serengil/tensorflow-101/blob/master/python/face-alignment.py 
 
 import io
 import os
@@ -18,12 +20,12 @@ def euclidean_distance(a, b):
 	return math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)))
 
 def detectFace(img):
-	faces = face_detector.detectMultiScale(img, 1.3, 5)	#detectMultiScale(image, scaleFactor, minNeighbours...)
+	faces = face_detector.detectMultiScale(img, 1.3, 5)	
 
 	if len(faces) > 0:
 		face = faces[0]
 		face_x, face_y, face_w, face_h = face	#x, y, width, height
-		img = img[int(face_y):int(face_y+face_h), int(face_x):int(face_x+face_w)]	#y,x? order?
+		img = img[int(face_y):int(face_y+face_h), int(face_x):int(face_x+face_w)]
 		img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 			
 	else:
@@ -34,8 +36,6 @@ def detectFace(img):
 
 def alignFace(img_path):
 	img = cv2.imread(img_path)
-	# plt.imshow(img[:, :, ::-1])
-	# plt.show()
 
 	img_raw = img.copy()
 
@@ -45,10 +45,9 @@ def alignFace(img_path):
 	
 	
 	if len(eyes) >= 2:
-		#find the largest 2 eye
+		#find the largest 2 "eyes"
 		
 		base_eyes = eyes[:, 2]
-
 		
 		items = []
 		for i in range(0, len(base_eyes)):
@@ -57,8 +56,7 @@ def alignFace(img_path):
 		
 		df = pd.DataFrame(items, columns = ["length", "idx"]).sort_values(by=['length'], ascending=False)
 		
-		eyes = eyes[df.idx.values[0:2]]
-		
+		eyes = eyes[df.idx.values[0:2]]	
 
 		#decide left and right eye
 		
@@ -70,7 +68,6 @@ def alignFace(img_path):
 		else:
 			left_eye = eye_2
 			right_eye = eye_1
-		
 
 		#center of eyes
 		
@@ -91,14 +88,14 @@ def alignFace(img_path):
 		
 		if left_eye_y > right_eye_y:
 			point_3rd = (right_eye_x, left_eye_y)
-			direction = -1 #rotate same direction to clock
+			direction = -1 #clockwise
 			print("rotate to clock direction")
 		else:
 			point_3rd = (left_eye_x, right_eye_y)
-			direction = 1 #rotate inverse direction of clock
+			direction = 1 #anti-clockwise
 			print("rotate to inverse clock direction")
 		
-
+		#determine angle of rotation using trigonometry
 		
 		cv2.circle(img, point_3rd, 2, (255, 0, 0) , 2)
 		
@@ -109,7 +106,6 @@ def alignFace(img_path):
 		a = euclidean_distance(left_eye_center, point_3rd)
 		b = euclidean_distance(right_eye_center, point_3rd)
 		c = euclidean_distance(right_eye_center, left_eye_center)
-		
 
 		
 		cos_a = (b*b + c*c - a*a)/(2*b*c)
@@ -118,27 +114,27 @@ def alignFace(img_path):
 		
 		
 		angle = (angle * 180) / math.pi
-		print("angle: ", angle," in degree")
+		#print("angle: ", angle," in degree")
 		
 		if direction == -1:
 			angle = 90 - angle
 		
-		print("angle: ", angle," in degree")
+		#print("angle: ", angle," in degree")
 		
 
-		#rotate 
+		#rotate image to align eyes 
 		
 		new_img = Image.fromarray(img_raw)
 		new_img = np.array(new_img.rotate(direction * angle))
 	else:
-		print("No alignment necessary.")
+		#print("No alignment necessary.")
 		new_img = img
 	
 	return new_img
 	
 
 
-#opencv path
+#opencv path and get haar-cascade classifier 
 
 opencv_home = cv2.__file__
 folders = opencv_home.split(os.path.sep)[0:-1]
@@ -148,17 +144,15 @@ for folder in folders[1:]:
 	path = path + "/" + folder
 
 face_detector_path = path+"/data/haarcascade_frontalface_default.xml"
-eye_detector_path = path+"/data/haarcascade_eye.xml"	#expects gray image
+eye_detector_path = path+"/data/haarcascade_eye.xml"	#note: expects grayscale image
 nose_detector_path = path+"/data/haarcascade_mcs_nose.xml"
 
 if os.path.isfile(face_detector_path) != True:
-	raise ValueError("Confirm that opencv is installed on your environment! Expected path ",detector_path," violated.")
+	raise ValueError("Check that OpenCV is installed.")
 
 face_detector = cv2.CascadeClassifier(face_detector_path)
 eye_detector = cv2.CascadeClassifier(eye_detector_path) 
 nose_detector = cv2.CascadeClassifier(nose_detector_path) 
-
-
 
 
 test_set = prepFolders.imagePaths
@@ -168,14 +162,14 @@ open(test_set[0])
 counter = 0
 
 for instance in test_set:
-	alignedFace = alignFace(instance)
+	alignedFace = alignFace(instance) #rotate face to align eyes
 	# plt.imshow(alignedFace[:, :, ::-1])
 	# plt.show()
 	
-	img, gray_img = detectFace(alignedFace)
+	img, gray_img = detectFace(alignedFace) #crop face
 	fig = plt.imshow(img[:, :, ::-1])
 	height, width, _ = img.shape 
-	halfHeight = int(height/1.8)
+	halfHeight = int(height/1.8) #crop image to half of face around the middle of the bridge of the nose.
 	fig = plt.imshow(img[0:halfHeight, :, ::-1])
 	plt.axis("off")	#remove axes: https://stackoverflow.com/questions/9295026/matplotlib-plots-removing-axis-legends-and-white-spaces/9295472
 	fig.axes.get_xaxis().set_visible(False)
