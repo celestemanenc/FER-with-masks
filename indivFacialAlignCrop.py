@@ -172,3 +172,8 @@ for instance in image:
 	fig.axes.get_xaxis().set_visible(False)
 	fig.axes.get_yaxis().set_visible(False)
 	plt.savefig("cropped_img.png", bbox_inches="tight", pad_inches=0)
+
+img = Image.open("cropped_img.png").convert('L')
+
+a = np.asarray(img)
+print(a.shape)

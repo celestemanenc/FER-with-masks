@@ -15,6 +15,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import SGD
 
 from sklearn.metrics import confusion_matrix
+from PIL import Image
 
 #open csv file containind CK+ data
 
@@ -78,17 +79,22 @@ print(x_test.shape[0], 'test samples')
 model = Sequential()
 
 #conv layer 1
-model.add(Conv2D(64, (7, 7), activation='relu', input_shape=[275,496,1])) #original 2nd param (5,5)
+model.add(Conv2D(64, (7, 7), activation='relu', input_shape=[275,496,1])) 
 model.add(MaxPooling2D(pool_size=(5,5), strides=(2, 2)))
 
 #conv layer 2
-model.add(Conv2D(128, (3, 3), activation='relu')) #original 1st param = 64
-model.add(Conv2D(128, (3, 3), activation='relu')) #original 1st param = 64
+model.add(Conv2D(128, (3, 3), activation='relu')) 
+model.add(Conv2D(128, (3, 3), activation='relu')) 
 model.add(AveragePooling2D(pool_size=(3,3), strides=(2, 2)))
 
 #conv layer 3
-model.add(Conv2D(256, (3, 3), activation='relu')) #original 1st param = 128
-model.add(Conv2D(256, (3, 3), activation='relu')) #original 1st param = 128
+model.add(Conv2D(256, (3, 3), activation='relu')) 
+model.add(Conv2D(256, (3, 3), activation='relu')) 
+model.add(AveragePooling2D(pool_size=(3,3), strides=(2, 2)))
+
+#conv layer 4
+model.add(Conv2D(256, (3, 3), activation='relu'))
+model.add(Conv2D(256, (3, 3), activation='relu'))
 model.add(AveragePooling2D(pool_size=(3,3), strides=(2, 2)))
 
 model.add(Flatten())
@@ -107,14 +113,12 @@ steps_per_epoch = len(x_train)//batch_size
 
 gen = ImageDataGenerator()
 train_generator = gen.flow(x_train, y_train, batch_size  = batch_size) 
-# train_generator = gen.flow_from_directory(x_train, y_train, batch_size  = batch_size, class_mode = "categorical")
-# validation_generator = gen.flow(x_test, y_test, batch_size  = batch_size) 
-# validation_generator = gen.flow_from_directory(x_test, y_test, batch_size  = batch_size, class_mode = "categorical") 
+
 opt = keras.optimizers.Adam()
 
 model.compile(loss="categorical_crossentropy", optimizer = opt, metrics = ["accuracy"])
 
-epochs = 7 #can do 7
+epochs = 6
 fit = True
 
 if fit == True:
@@ -134,10 +138,31 @@ print(model.metrics_names)
 print("Test loss: ", score[0])
 print("Test accuracy: ", 100*score[1])
 
-# Y_pred = model.predict_generator(validation_generator, len(x_test) // batch_size+1)
-# y_pred = np.argmax(Y_pred, axis=1)
-# print('Confusion Matrix')
-# print(confusion_matrix(validation_generator.classes, y_pred))
-# print('Classification Report')
-# target_names = ['Cats', 'Dogs', 'Horse']
-# print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
+
+img = image.load_img("cropped_img.png", grayscale=True, target_size=(275, 496))
+
+x = image.img_to_array(img)
+x = np.expand_dims(x, axis = 0)
+
+x /= 255
+
+custom = model.predict(x)
+print(custom)
+
+maximum = np.max(custom[0])
+max_index = np.where(custom[0] == maximum)
+
+print("index: ", max_index)
+
+if (max_index[0] == 0):
+    emotion = "NEUTRAL"
+elif (max_index[0] == 1):
+    emotion = "ANGRY"
+elif (max_index[0] == 2):
+    emotion = "HAPPY"
+elif (max_index[0] == 3):
+    emotion = "SAD"
+elif (max_index[0] == 4):
+    emotion = "SURPRISED"
+
+print(emotion)

@@ -3,13 +3,30 @@
 
 # webcam capture code inspired by: https://github.com/kevinam99/capturing-images-from-webcam-using-opencv-python/blob/master/webcam-capture-v1.01.py
 
-import cv2 
+import io
+import os
+import cv2
+import matplotlib.pyplot as plt 
+import numpy as np 
+import pandas as pd 
+import math 
+import sys
+from PIL import Image
+from subprocess import call
 
 #--Prompt with instructions (including request for webcam access)
 
+print("This is a prototype.")
+print("How the app works is the following:")
+print("1. A window will appear showing yourself from your webcam. [Please grant webcam access.]")
+print("2. Please press 's' to take photo of yourself making a facial expression or 'q' to abort.")
+print("3. The app will then crop the image around the upper half of the face and make it gray scale.")
+print("4. The neural network will train and then output a prediction for the emotion detected.")
 
-
-
+try:
+    input("Press enter to continue")
+except SyntaxError:
+    pass
 
 #--Take photo. (Access to webcam must be granted)
 
@@ -61,4 +78,26 @@ while True:
         cv2.destroyAllWindows()
         break
 
+#-- Align and crop!
+
+call(["python3", "indivFacialAlignCrop.py"])
+
+img = Image.open("cropped_img.png").convert('L')
+
+a = np.asarray(img)
+print("------> Image dimensions: ", a.shape)
+
+print("Dimonsions should be approximately (275, 496) --may vary slightly")
+print("**************")
+print("WARNING: If the dimensions are very different, e.g. ±50 for either dimension, please ABORT by performing ^C (Control+C).")
+print("**************")
+
+# if a.shape == (275, 496):
+#     print("Face detected correctly")
+# else:
+#     print("Error, face not detected.")
+#     sys.exit("Error, please try again.")
+
 #-- Run CNN prediciton on photo and let's see what happens +Show emotion e.g. "Are you *angry* ?" Y/N
+
+call(["python3", "CNN.py"])
