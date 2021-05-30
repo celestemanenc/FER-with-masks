@@ -146,11 +146,11 @@ x = np.expand_dims(x, axis = 0)
 
 x /= 255
 
-custom = model.predict(x)
-print(custom)
+pred = model.predict(x)
+print(pred)
 
-maximum = np.max(custom[0])
-max_index = np.where(custom[0] == maximum)
+maximum = np.max(pred[0])
+max_index = np.where(pred[0] == maximum)
 
 print("index: ", max_index)
 
