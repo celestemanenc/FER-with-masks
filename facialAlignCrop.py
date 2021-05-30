@@ -175,6 +175,7 @@ for instance in test_set:
 	fig.axes.get_xaxis().set_visible(False)
 	fig.axes.get_yaxis().set_visible(False)
 
+	#CHANGE PATH TO WHERE NEW PRE-PROCESSED IMAGES SHOULD BE STORED.
 	newImagePath = "/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/preprocessed-ck/" + prepFolders.imageFilenames[counter]
 	plt.savefig(newImagePath, bbox_inches="tight", pad_inches=0)
 

@@ -18,6 +18,7 @@ def listdir_noHiddenFiles(path):
         if not f.startswith('.'):
             yield f
 
+#CHANGE ALL PATHS TO WHERE CK+ IMAGES ARE STORED
 for folders in list(listdir_noHiddenFiles("/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/cohn-kanade-images")):
     for subfolders in list(listdir_noHiddenFiles("/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/cohn-kanade-images/" + str(folders))):
         for imageFiles in list(listdir_noHiddenFiles("/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/cohn-kanade-images/" + str(folders) + "/" + str(subfolders))):

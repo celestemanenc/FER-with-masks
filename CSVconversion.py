@@ -16,6 +16,7 @@ def listdir_noHiddenFiles(path):
             yield f
 
 #list preprocessed images
+#CHANGE PATH TO WHERE PRE-PROCESSED IMAGES ARE STORED
 for name in glob.glob("/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/FILTERED_preprocessed-ck/*"):
     fullpath = name
     images_preprocessed.append(os.path.relpath(fullpath, "/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/FILTERED_preprocessed-ck/"))
@@ -28,6 +29,7 @@ for fn in images_preprocessed:
 
 
 #list of lists of labelled images with labels 
+#CHANGE PATHS TO WHERE EMOTION LABELS FROM CK+ ARE STORED
 images_labelled = []
 for image in images_noExt:    
     for folder in os.listdir("/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/Emotion/"):
@@ -41,6 +43,7 @@ for image in images_noExt:
 
 print(images_labelled)
 
+#CHANGE PATH TO WHERE PRE-PROCESSED IMAGES ARE STORED
 processed_images_dir = "/Users/celestemanenc/Desktop/CSy3/FINAL_YEAR_PROJECT/code/FILTERED_preprocessed-ck/"
 
 df = pd.DataFrame()
