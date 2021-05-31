@@ -1,3 +1,7 @@
+# inspired by
+# https://sefiks.com/2018/01/01/facial-expression-recognition-with-keras/
+# https://sefiks.com/2017/11/03/a-gentle-introduction-to-convolutional-neural-networks/
+
 import io
 import os
 import cv2
@@ -100,9 +104,9 @@ model.add(AveragePooling2D(pool_size=(3,3), strides=(2, 2)))
 model.add(Flatten())
 
 #NN
-model.add(Dense(512, activation='relu', kernel_regularizer='l2')) #original 1st param = 1024
+model.add(Dense(512, activation='relu', kernel_regularizer='l2')) 
 model.add(Dropout(0.2))
-model.add(Dense(512, activation='relu', kernel_regularizer='l2')) #original 1st param = 1024
+model.add(Dense(512, activation='relu', kernel_regularizer='l2')) 
 model.add(Dropout(0.2))
 
 model.add(Dense(5, activation='softmax')) #5 classes
