@@ -123,8 +123,6 @@ fit = True
 
 if fit == True:
     model.fit_generator(train_generator, steps_per_epoch=steps_per_epoch, epochs=epochs)
-# else:
-#     model.load_weights
 
 
 #evaluate!
